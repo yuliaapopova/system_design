@@ -12,6 +12,7 @@
 - Поиск постов по географии
 - Просмотр ленты подписок
 - Просмотр ленты других путешественников
+- Авторизация/аутентификация пользователей
 
 ### Нефункциональные требования
 - DAU = 10млн
@@ -24,8 +25,8 @@
 - Сезонность - нет
 - Все данные храним всегда
 - Лимиты
-  - Публикация поста: ~5сек
-  - Просмотр ленты: ~2сек
+  - Публикация поста: ~2сек
+  - Просмотр ленты: ~1сек
   - Фотография (1шт): ~500Kb
   - Длина описания(max): 200 символов
   - Количество фотографий к посту(max): 5 шт
@@ -79,12 +80,22 @@ username string 2Kb
 email string 2Kb
 phone string 2Kb
 description string 2Kb
-subscribe []string 20Mb (2Kb * 10000 max)
 created_at timestamp 8b
 updated_at timestamp 8b
 
-total: 21Mb
+total: 11Kb
 ```
+
+Subscribers
+```
+user_id integer 8b
+subscribe_id integer_8b
+created_at timestamp 8b
+updated_at timestamp 8b
+
+total: 16b * 1000 (макисмум подписчиков на пользователя) = 16Kb
+```
+
 
 #### Posts:
 ```
@@ -92,7 +103,7 @@ RPS(write): 10 000 000 * 5 / 86 400 = 578
 RPS(read):  10 000 000 * 30 / 86 400 = 3473
 
 Traffic(write): 578 * 55Kb = 32Mb/s
-Traffic(read):  3473 * 55Kb *  = 192 Mb/s
+Traffic(read):  3473 * 55Kb  = 192 Mb/s
 ```
 
 #### Comments:
