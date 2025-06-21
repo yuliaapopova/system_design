@@ -1,0 +1,711 @@
+openapi: 3.0.4
+info:
+  title: Swagger Travel Post - OpenAPI 3.0
+  version: 1.0.12
+tags:
+  - name: post
+  - name: comment
+  - name: reaction
+  - name: user
+  - name: subscribe
+  - name: photo
+paths:
+  /api/v1/post:
+    post:
+      tags:
+        - post
+      summary: Add a new post.
+      operationId: addPost
+      requestBody:
+        description: Create a new post
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: Invalid input
+        '422':
+          description: Validation exception
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      tags:
+        - post
+      summary: Get posts.
+      description: Returns a single post.
+      operationId: getPost
+      parameters:
+        - name: userId
+          in: query
+          schema:
+            type: integer
+        - name: location
+          in: query
+          schema:
+            type: object
+            properties:
+              longitude:
+                type: string
+                example: '59.9386'
+              latitude:
+                type: string
+                example: '59.9386'
+        - name: offset
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Post'
+  /api/v1/post/{postId}:
+    get:
+      tags:
+        - post
+      summary: Get post by ID.
+      description: Returns a single post.
+      operationId: getPostById
+      parameters:
+        - name: postId
+          in: path
+          description: ID of post to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Post'
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Post not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - post
+      summary: Update post
+      description: Update an existing post by Id.
+      operationId: updatePost
+      parameters:
+        - name: postId
+          in: path
+          description: ID of post to return
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        description: Update an existent pet in the store
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Post'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Post not found
+        '422':
+          description: Validation exception
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - post
+      summary: Deletes a post.
+      description: Delete a post.
+      operationId: deletePost
+      parameters:
+        - name: postId
+          in: path
+          description: Post id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Post deleted
+        '400':
+          description: Invalid post value
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+      security:
+        - petstore_auth:
+            - write:pets
+            - read:pets
+  /api/v1/post/{postId}/comments:
+    get:
+      tags:
+        - comment
+      summary: Get comments.
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: offset
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '400':
+          description: Invalid input
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - comment
+      summary: Add a new comment.
+      operationId: addComment
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: Create a new pet in the store
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                comment:
+                  type: string
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+        '400':
+          description: Invalid input
+        '422':
+          description: Validation exception
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+  /api/v1/post/{postId}/comments/{commentId}:
+    delete:
+      tags:
+        - comment
+      summary: Deletes a comment.
+      description: Delete a comment.
+      operationId: deleteComment
+      parameters:
+        - name: postId
+          in: path
+          description: Commant id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: commentId
+          in: path
+          description: Commant id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Pet deleted
+        '400':
+          description: Invalid pet value
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    put:
+      tags:
+        - comment
+      summary: Update a comment.
+      description: Update a comment.
+      operationId: updateComment
+      parameters:
+        - name: postId
+          in: path
+          description: Commant id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: commentId
+          in: path
+          description: Commant id to get
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Pet deleted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comment"
+        '400':
+          description: Invalid pet value
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/v1/post/{postId}/reactions:
+    get:
+      tags:
+        - reaction
+      summary: Get a reaction.
+      parameters:
+        - name: postId
+          in: path
+          description: Post id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: number
+        '400':
+          description: Invalid input
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    post:
+      tags:
+        - reaction
+      summary: Add a new post.
+      operationId: addReaction
+      parameters:
+        - name: postId
+          in: path
+          description: Post id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Reaction'
+        '400':
+          description: Invalid input
+        '422':
+          description: Validation exception
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Reaction"
+  /api/v1/post/{postId}/reaction/{reactionId}:
+    delete:
+      tags:
+        - reaction
+      summary: Deletes a reaction.
+      description: Delete a reaction.
+      operationId: deleteReaction
+      parameters:
+        - name: reactionId
+          in: path
+          description: Reaction id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: postId
+          in: path
+          description: Reaction id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Reaction deleted
+        '400':
+          description: Invalid pet value
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/v1/users:
+    post:
+      tags:
+        - user
+      summary: Create user.
+      description: This can only be done by the logged in user.
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/v1/user/{userId}/subscribe:
+    post:
+      tags:
+        - subscribe
+      summary: Subscribe to a user.
+      operationId: subscribeUser
+      parameters:
+        - name: userId
+          in: path
+          description: Reaction id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    delete:
+      tags:
+        - subscribe
+      summary: Subscribe to a user.
+      operationId: deleteSubscribeUser
+      parameters:
+        - name: userId
+          in: path
+          description: Reaction id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+    get:
+      tags:
+        - subscribe
+      summary: Subscribe to a user.
+      operationId: getSubscribesUser
+      parameters:
+        - name: userId
+          in: path
+          description: Reaction id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: number
+                  userIds:
+                    type: array
+                    items:
+                      type: integer
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/v1/post/{postId}/photo/download:
+    post:
+      tags:
+        - photo
+      summary: Download photo
+      operationId: downloadPhoto
+      parameters:
+        - name: postId
+          in: path
+          description: Reaction id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                photo:
+                  type: string
+                  format: base64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: integer
+                  url:
+                    type: string
+        '400':
+          description: photo invalid
+        '404':
+          description: post not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+  /api/v1/post/{postId}/photo/{photoId}:
+    delete:
+      tags:
+        - photo
+      summary: delete photo
+      operationId: deletePhoto
+      parameters:
+        - name: postId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: photoId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+        '400':
+          description: photo or post invalid
+        '404':
+          description: post or photo not found
+        default:
+          description: Unexpected error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+components:
+  schemas:
+    Post:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        userId:
+          type: integer
+          format: int64
+          example: 198772
+        description:
+          type: string
+        photos:
+          type: array
+          items:
+            type: string
+        location:
+          type: object
+          properties:
+            longitude:
+              type: string
+            latitude:
+              type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        post_id:
+          type: integer
+        text:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+    Reaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        user_id:
+          type: integer
+        post_id:
+          type: integer
+        created_at:
+          type: string
+        updated_at:
+          type: string
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+          example: 10
+        username:
+          type: string
+          example: theUser
+        email:
+          type: string
+          example: john@email.com
+        phone:
+          type: string
+          example: '12345'
+        avatar:
+          type: string
+        description:
+          type: string
+        subscribe:
+          type: array
+          items:
+            type: integer
+            description: array is user_id
+        created_at:
+          type: string
+          example: '2025-06-12T12:36:339'
+        updated_at:
+          type: string
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            "write:pets": modify pets in your account
+            "read:pets": read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
