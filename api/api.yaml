@@ -10,7 +10,7 @@ tags:
   - name: subscribe
   - name: photo
 paths:
-  /api/v1/post:
+  /api/v1/posts:
     post:
       tags:
         - post
@@ -441,7 +441,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-  /api/v1/user/{userId}/subscribe:
+  /api/v1/user/{userId}/subscribers:
     post:
       tags:
         - subscribe
@@ -450,7 +450,7 @@ paths:
       parameters:
         - name: userId
           in: path
-          description: Reaction id to delete
+          description: User id to delete
           required: true
           schema:
             type: integer
@@ -472,7 +472,7 @@ paths:
       parameters:
         - name: userId
           in: path
-          description: Reaction id to delete
+          description: User id to delete
           required: true
           schema:
             type: integer
